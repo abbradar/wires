@@ -21,12 +21,12 @@ import Control.Arrow
 import Control.Category
 import Control.DeepSeq
 import Control.Monad.Fix
-import Data.Align
 import Data.Functor.Bind
 import Data.Functor.Extend
 import Data.Functor.Plus
 import Data.Profunctor
 import Data.Semigroup
+import Data.Align
 import Data.These
 import Prelude hiding ((.), id)
 
@@ -39,13 +39,14 @@ data Event a
     | Now a   -- ^ In this frame with the given value.
     deriving (Functor)
 
-instance Align Event where
-    nil = NotNow
-
+instance Semialign Event where
     alignWith f (Now x) (Now y) = Now (f (These x y))
     alignWith f (Now x) _       = Now (f (This x))
     alignWith f _       (Now y) = Now (f (That y))
     alignWith _ _       _       = NotNow
+
+instance Align Event where
+    nil = NotNow
 
 instance Alt Event where
     (<!>) = alignWith (mergeThese const)

@@ -77,6 +77,8 @@ unalignE (Now (These x y)) = (Now x,  Now y)
 
 unlessE :: Event a -> Event b -> Event a
 unlessE mx my = catMapE justThis (align mx my)
+    where justThis (This x) = Just x
+          justThis _        = Nothing
 
 
 -- | Run the given action to initialise the given wire.  Simplified
